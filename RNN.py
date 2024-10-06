@@ -20,7 +20,10 @@ def GetDataSet():
     
 #This Function is to take 5 days worth of reference price, and the next day (target) and return them 
 def FormatData(dataset):
-    #****Move your normalised data code in here so it prints the normalised data list *****
+    data["Target"] = (data["Target"] - data["Target"].min())/(data["Target"].max() - data["Target"].min())
+    price_list = list(data['Target'])
+    print(price_list[0])
+    print(data["Target"])
     prices = []
     for date in dataset["Target"]:
         prices.append(date)
@@ -34,4 +37,6 @@ def main():
     GetDataSet()
     FormatData()#Return the list of 5 and the target, assigned to two variables data, target
     ##Add a function call to calculate target with the 5 days of data list and target 
-  
+
+
+#Description- This project uses the Long Short Term Memory (LSTM) algorithm to weight short term fluctuations in changes in stock prices against long term trends. This model incorporates neural networks and machine learning to accurately use past data to predict future stock prices.

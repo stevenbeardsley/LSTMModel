@@ -1,8 +1,9 @@
-import tensorflow as tf 
 import numpy as np
-from tensorflow.keras import Sequential 
-from tensorflow.keras.layers import Dense
 import yfinance as yf 
+import tensorflow as tf 
+from tensorflow.keras import Sequential 
+from tensorflow.keras.layers import LSTM, Dense
+from sklearn.model_selection import train_test_split
 
 #Get data 
 def GetDataSet():
@@ -32,15 +33,41 @@ def FormatData(data, sequenceLength):
     targetList = np.array(targetList)
     return sampleList, targetList
 
-def CalculateTarget(data, target):
-    targetGuess = 0
+def run(sampleList, targetList, sequenceLength):
+    #Shape the sampleList to fit the LSTM layer in the neural 
+    # Before reshaping: 2D array consisting of  (number_of_samples, sequence_length)
+    #After shaping: 3D array (samples, time_steps, features)
+    sampleList = np.reshape(sampleList, (sampleList.shape[0], sampleList.shape[1],1))
 
-    return targetGuess
+    #Split the data 
+    sampleTrain, sampleTest, targetTrain, targetTest = train_test_split(sampleList, targetList, test_size=0.2,random_state=42)
+
+    #Build the model
+    model = Sequential()
+    model.add(LSTM(50, activation='relu', input_shape=(sequenceLength,1)))
+    model.add(Dense(1))
+
+    #Compile the model
+    model.compile(optimizer='adam', loss='mean_squared_error')
+
+    #Train the model with our data 
+    model.fit(sampleTrain, targetTrain, epochs=100, batch_size=1, verbose=1 )
+
+    #Create loss function - Tracks the difference between the predicted and the actual value (ground truth)
+    loss = model.evaluate(sampleTest, targetTest)
+    print ("The loss accuracy: ", loss)
+    nextPrice = model.predict(sampleTest)
+    print ("The next price is: ",nextPrice[-1])
+    #217
+
 
 def main():
-    sequenceLength = 10
+    sequenceLength = 10 #Yet to be optimised 
     priceList = GetDataSet()
     sampleList, targetList = FormatData(priceList, sequenceLength)
-    
+    run (sampleList, targetList, sequenceLength)
+
 main()
 #Description- This project uses the Long Short Term Memory (LSTM) algorithm to weight short term fluctuations in changes in stock prices against long term trends. This model incorporates neural networks and machine learning to accurately use past data to predict future stock prices.
+#Next steps
+# 1. Link up this code with the website 

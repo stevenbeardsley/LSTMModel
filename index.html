@@ -37,10 +37,15 @@
     <!-- JavaScript to handle form submission and display prediction -->
     <script>
         $(document).ready(function(){
-            $('#runButton').click(function(){
+            $('#predictButton').click(function(event){
+                event.preventDefault();  // Prevent form submission
+                
+                const ticker = $('#ticker').val();  // Get the ticker value from the input
+                
                 $.ajax({
                     url: '/predict-price',
                     type: 'POST',
+                    data: { ticker: ticker },
                     success: function(data) {
                         $('#output').text(data.response);
                     },

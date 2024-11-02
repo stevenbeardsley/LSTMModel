@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify
-
+import RNN
+#Flask operates as a very simple server to run the code on basically 
 app = Flask(__name__)
 
 # Sample stock prediction logic
@@ -15,9 +16,10 @@ def index():
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    ticker = request.form['ticker'].upper()
+    ticker = request.form['ticker'].upper() #The stock symbol is already read so should be easy to parse it 
     prediction = stock_predictions.get(ticker, "No prediction available for the entered stock ticker.")
-    return jsonify(prediction=prediction)
+    newPrediction = RNN.main()
+    return jsonify({'price' : newPrediction})
 
 if __name__ == '__main__':
     app.run(debug=True)

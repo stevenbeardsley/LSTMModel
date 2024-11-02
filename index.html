@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beardsley's Brilliant Stock Prediction</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <header>
@@ -23,33 +24,30 @@
         <form id="stock-form">
             <label for="ticker">Stock Ticker:</label>
             <input type="text" id="ticker" name="ticker" placeholder="e.g., AAPL" required>
-            <button type="submit">Predict</button>
+            <button id="predictButton">Predict!</button>
         </form>
     </section>
 
     <!-- Placeholder for displaying prediction -->
     <section id="prediction-result">
         <h2>Prediction Result</h2>
-        <p id="result"></p>
+        <p id="output"></p>
     </section>
 
     <!-- JavaScript to handle form submission and display prediction -->
     <script>
-        document.getElementById('stock-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const ticker = document.getElementById('ticker').value.toUpperCase();
-
-            // Send a POST request to the Flask backend
-            fetch('/predict', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `ticker=${ticker}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('result').textContent = data.prediction;
+        $(document).ready(function(){
+            $('#runButton').click(function(){
+                $.ajax({
+                    url: '/predict-price',
+                    type: 'POST',
+                    success: function(data) {
+                        $('#output').text(data.response);
+                    },
+                    error: function(error) {
+                        $('#output').text("Error running the script.");
+                    }
+                });
             });
         });
     </script>

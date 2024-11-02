@@ -7,17 +7,14 @@ from sklearn.model_selection import train_test_split
 
 #Get data 
 def GetDataSet():
+    #Task 1: Create a input for the website to allow for more stocks to be tested - maybe also add dates into the input list who knows 
     data = yf.download(tickers = 'AAPL', start='2010-01-11',end='2011-01-11')#Years worth of data 
-
-    #Predict day number 9
     data['Target']  = data['Adj Close']- data.Open
     data['Target'] = data['Target'] .shift(-1)
 
-    #Create CNN
     priceList=  data['Target']
     dateList  = data.index
     return priceList 
-   #Error is that in getdataset there isn't a header called Target.
     
 #This Function is to take 5 days worth of reference price, and the next day (target) and return them 
 def FormatData(data, sequenceLength):
@@ -58,16 +55,15 @@ def run(sampleList, targetList, sequenceLength):
     print ("The loss accuracy: ", loss)
     nextPrice = model.predict(sampleTest)
     print ("The next price is: ",nextPrice[-1])
-    #217
-
+    return nextPrice[-1] 
 
 def main():
-    sequenceLength = 10 #Yet to be optimised 
+    sequenceLength = 10  
     priceList = GetDataSet()
     sampleList, targetList = FormatData(priceList, sequenceLength)
-    run (sampleList, targetList, sequenceLength)
+    price = run (sampleList, targetList, sequenceLength)
+    
+    return price
 
-main()
-#Description- This project uses the Long Short Term Memory (LSTM) algorithm to weight short term fluctuations in changes in stock prices against long term trends. This model incorporates neural networks and machine learning to accurately use past data to predict future stock prices.
-#Next steps
-# 1. Link up this code with the website 
+#Description- This project uses the Long Short Term Memory (LSTM) algorithm to weight short term fluctuations in changes in stock prices against long term trends.
+# This model incorporates neural networks and machine learning to accurately use past data to predict future stock prices.

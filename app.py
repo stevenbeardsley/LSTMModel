@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 import subprocess
-
+import RNN
 app = Flask(__name__)
 
 # Serve the HTML page
@@ -17,14 +17,15 @@ def predict_price():
     try:
         # Run RNN.py with ticker as an argument (this assumes RNN.py is set up to take a command-line argument)
         result = subprocess.run(['python', 'RNN.py', ticker], capture_output=True, text=True)
+        result = RNN.main("AAPL")
 
         # Check for errors
         if result.returncode != 0:
             return jsonify({"response": "Error running the RNN script."})
 
         # Get the price prediction from the script output
-        predicted_price = result.stdout.strip()
-        return jsonify({"response": f"The predicted price for {ticker} is: {predicted_price}"})
+        #predicted_price = result.stdout.strip()
+        return jsonify({"response": f"The predicted price for {ticker} is: {result}"})
     except Exception as e:
         return jsonify({"response": f"Error: {str(e)}"})
 

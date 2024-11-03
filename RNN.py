@@ -58,7 +58,7 @@ def run(sampleList, targetList, sequenceLength):
     #print ("The next price is: ",nextPrice[-1])
     return nextPrice[-1] 
 
-def main():
+def main(ticker):
     # Read command line arguments for ticker and date range
     ticker = sys.argv[1] if len(sys.argv) > 1 else "AAPL"
     start_date = sys.argv[2] if len(sys.argv) > 2 else "2010-01-11"
@@ -72,7 +72,7 @@ def main():
     return price
 
 if __name__ == "__main__":
-    prediction = main()
+    prediction = main("AAPL")
     print(prediction)  # Print the final prediction for Flask to capture
 
 #Description- This project uses the Long Short Term Memory (LSTM) algorithm to weight short term fluctuations in changes in stock prices against long term trends.
